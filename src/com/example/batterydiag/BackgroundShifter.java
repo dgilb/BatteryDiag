@@ -4,36 +4,37 @@ public class BackgroundShifter extends Thread {
 	
 	MainActivity con;
 
-	boolean up = true;
-
+	public boolean up = true;
+	public boolean runloop = true;
+	
 	public BackgroundShifter(MainActivity a) {
 		this.con = a;
 	}
 
 	public void run() {
-		for (;;) {
+		while (runloop) {
 			if (up == true)
-				con.color++;
+				con.bgcolor++;
 			else
-				con.color--;
+				con.bgcolor--;
 			
-			if (con.color > 255) {
-				con.color = 254;
+			if (con.bgcolor > 255) {
+				con.bgcolor = 254;
 				up = false;
 			}
-			else if (con.color < 0) {
-				con.color = 1;
+			else if (con.bgcolor < 0) {
+				con.bgcolor = 1;
 				up = true;
 			}
 
 			con.updateUI.sendEmptyMessage(0);
 			try {
-   				BackgroundShifter.sleep(1);
-   			} 
+   				BackgroundShifter.sleep(con.bgspeed);
+   			}
    			catch (InterruptedException err) {
    				err.printStackTrace();
    			}
    		}
+		return;
    	}
-    
 }

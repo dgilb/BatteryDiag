@@ -15,4 +15,43 @@
         android:layout_height="wrap_content"
         android:text="@string/hello_world" />
 
+    <RelativeLayout
+        android:id="@+id/backgroundshiftRelativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_alignLeft="@+id/counterTextView"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="14dp" >
+
+        <SeekBar
+            android:id="@+id/backgroundspeedSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:max="99"
+            android:progress="0" />
+
+        <ToggleButton
+            android:id="@+id/backgroundshiftToggleButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="18dp"
+            android:text="ToggleButton" 
+            android:onClick="onbsToggleClicked" />
+
+        <TextView
+            android:id="@+id/backgroundSpeedTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/backgroundshiftToggleButton"
+            android:layout_alignBottom="@+id/backgroundshiftToggleButton"
+            android:layout_marginLeft="34dp"
+            android:layout_toRightOf="@+id/backgroundshiftToggleButton"
+            android:text="TextView" />
+
+    </RelativeLayout>
+
 </RelativeLayout>
