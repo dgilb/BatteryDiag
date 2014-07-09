@@ -13,7 +13,7 @@ public class MainLoop extends Thread{
 			con.counter++;
 			con.updateUI.sendEmptyMessage(0);
 			try {
-				Thread.sleep(700);
+				Thread.sleep(1000);
 			} 
 			catch (InterruptedException err) {
 				err.printStackTrace();
