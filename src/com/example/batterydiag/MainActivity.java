@@ -9,6 +9,8 @@ import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -68,7 +70,7 @@ public class MainActivity extends Activity {
        }
     }
     
-    @SuppressLint("HandlerLeak") 
+	@SuppressLint("HandlerLeak") 
     Handler updateUI = new Handler() {
     	public void handleMessage(Message m) {
 			setBackgroundColor(bgcolor);
@@ -77,36 +79,47 @@ public class MainActivity extends Activity {
     	}
     };
 
-    void setBackgroundColor(int col) {
+    public void setBackgroundColor(int col) {
     	RelativeLayout L = (RelativeLayout) this.findViewById(R.id.mainRelativeLayout);
     	L.setBackgroundColor(Color.argb(255, col, col, col));
     }
 
     void configureBackgroundControl() {
-    	SeekBar B = (SeekBar) this.findViewById(R.id.backgroundspeedSeekBar);
-    	B.setMax(99);
+    	final EditText bgspeedTextBox = (EditText) findViewById(R.id.bgspeedEditText);
+        bgspeedTextBox.setOnFocusChangeListener(new OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+            	TextView bsspeedLabel = (TextView) findViewById(R.id.backgroundSpeedTextView);
+            	if (hasFocus == false) {
+            		try {
+            			bgspeed = Integer.parseInt(bgspeedTextBox.getText().toString());
+            		} catch (NumberFormatException err) { 
+            			bgspeedTextBox.setText(Integer.toString(bgspeed));
+            		} 
+            		bsspeedLabel.setText(Integer.toString(bgspeed));
+            	}
+            }
+        });
 
+    	SeekBar B = (SeekBar) this.findViewById(R.id.backgroundspeedSeekBar);
     	B.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
     		@Override
     		public void onProgressChanged(SeekBar bgspeedSeekBar, int progress, boolean touch) {
     			bgspeed = progress+1;
 
     			TextView bsspeedLabel = (TextView) findViewById(R.id.backgroundSpeedTextView);
-    	    	bsspeedLabel.setText((Integer.toString(bgspeed)+1)+" ms");
+    			bsspeedLabel.setText((Integer.toString(progress))+" ms / "+Integer.toString(bgspeedSeekBar.getMax()));
     			
     		}
 
-			@Override
-			public void onStartTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-				
-			}
+    		@Override
+    		public void onStartTrackingTouch(SeekBar seekBar) {
+    			// TODO Auto-generated method stub
+    		}
 
-			@Override
-			public void onStopTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-				
-			}
+    		@Override
+    		public void onStopTrackingTouch(SeekBar seekBar) {
+    			// TODO Auto-generated method stub
+    			}
     	});
 
     	B.setEnabled(false);

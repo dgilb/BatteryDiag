@@ -10,7 +10,9 @@ public class MainLoop extends Thread{
 
 	public void run() {
 		for (;;) {
+
 			con.counter++;
+			
 			con.updateUI.sendEmptyMessage(0);
 			try {
 				Thread.sleep(700);
