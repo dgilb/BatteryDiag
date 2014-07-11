@@ -26,14 +26,12 @@ public class MainActivity extends Activity {
 	
 	private BackgroundShifter bs;
 	private CurrentFileReader cr;
-	private MainLoop loop = new MainLoop(this);
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         configureBackgroundControl();
-        this.loop.start();
     }
 
     @Override
