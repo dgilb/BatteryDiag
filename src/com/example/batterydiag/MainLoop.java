@@ -15,7 +15,7 @@ public class MainLoop extends Thread{
 			
 			con.updateUI.sendEmptyMessage(0);
 			try {
-				Thread.sleep(700);
+				Thread.sleep(100);
 			} 
 			catch (InterruptedException err) {
 				err.printStackTrace();

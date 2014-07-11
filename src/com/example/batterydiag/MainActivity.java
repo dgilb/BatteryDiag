@@ -25,6 +25,7 @@ public class MainActivity extends Activity {
 	public int counter;
 	
 	private BackgroundShifter bs;
+	private CurrentFileReader cr;
 	private MainLoop loop = new MainLoop(this);
 	
     @Override
@@ -64,9 +65,13 @@ public class MainActivity extends Activity {
         	bs = new BackgroundShifter(this);
         	this.bs.runloop = true;
             this.bs.start();        	
+            cr = new CurrentFileReader(this);
+            this.cr.runloop=true;
+            this.cr.start();
         } else {
         	B.setEnabled(false);
             this.bs.runloop = false;
+            this.cr.runloop=false;
        }
     }
     
@@ -76,6 +81,13 @@ public class MainActivity extends Activity {
 			setBackgroundColor(bgcolor);
     		TextView textView = (TextView) findViewById(R.id.counterTextView);
     		textView.setText(Integer.toString(counter));
+    		if ((m.arg1 != 0)&&(m.arg2!=0)) {
+    			TextView currentview=(TextView)findViewById(R.id.currentTextView);
+    			currentview.setText(Integer.toString(m.arg1));//+"  "+Integer.toString(m.arg2));
+                TextView voltageview=(TextView)findViewById(R.id.voltagetextView);
+                voltageview.setText(Integer.toString(m.arg2));
+
+    		}
     	}
     };
 
@@ -132,5 +144,6 @@ public class MainActivity extends Activity {
     	
     	
     }
-    
 }
+    
+ 

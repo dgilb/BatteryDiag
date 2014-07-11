@@ -13,8 +13,8 @@
         android:id="@+id/counterTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
-
+        android:text="@string/hello_world"
+         />
     <RelativeLayout
         android:id="@+id/backgroundshiftRelativeLayout"
         android:layout_width="match_parent"
@@ -60,5 +60,24 @@
             android:inputType="number" />
 
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/currentTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/counterTextView"
+        android:layout_below="@+id/counterTextView"
+        android:layout_marginTop="30dp"
+        android:text="other_world" />
+
+    <TextView
+        android:id="@+id/voltagetextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/currentTextView"
+        android:layout_alignBottom="@+id/currentTextView"
+        android:layout_marginLeft="18dp"
+        android:layout_toRightOf="@+id/currentTextView"
+        android:text="TextView" />
 
 </RelativeLayout>
