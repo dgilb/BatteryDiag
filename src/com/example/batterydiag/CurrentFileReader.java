@@ -21,6 +21,7 @@ public class CurrentFileReader extends Thread {
 		while (runloop) {
 			File f = new File("/sys/class/power_supply/battery/current_now");
 			File f2 = new File("/sys/class/power_supply/battery/voltage_now");
+
 			if(f.exists() && f2.exists()) {
 				try {
 					BufferedReader br = new BufferedReader(new FileReader(f));
