@@ -23,15 +23,6 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="14dp" >
 
-        <SeekBar
-            android:id="@+id/backgroundspeedSeekBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:max="99"
-            android:progress="0" />
-
         <ToggleButton
             android:id="@+id/backgroundshiftToggleButton"
             android:layout_width="wrap_content"
@@ -46,11 +37,28 @@
             android:id="@+id/backgroundSpeedTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:text="TextView" />
+
+        <EditText
+            android:id="@+id/bgspeedEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/backgroundshiftToggleButton"
             android:layout_alignBottom="@+id/backgroundshiftToggleButton"
-            android:layout_marginLeft="34dp"
-            android:layout_toRightOf="@+id/backgroundshiftToggleButton"
-            android:text="TextView" />
+            android:layout_alignParentRight="true"
+            android:ems="10"
+            android:enabled="false"
+            android:inputType="number"
+            android:maxLength="3" />
+
+        <SeekBar
+            android:id="@+id/seekBar1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/backgroundshiftToggleButton" />
 
     </RelativeLayout>
 

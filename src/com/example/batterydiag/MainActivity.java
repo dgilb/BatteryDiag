@@ -9,30 +9,28 @@ import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 
 public class MainActivity extends Activity {
 
-	public int bgcolor;
-	public int bgspeed;
-	public int counter=0;
-	
-	
+	public int bgcolor = 255;
+	public int bgspeed = 15;
+	public int counter = 0;
+		
 	private BackgroundShifter bs;
 	private CurrentFileReader cr;
-	
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         configureBackgroundControl();
-        
+        setBackgroundColor(bgcolor);
     }
 
     @Override
@@ -57,10 +55,10 @@ public class MainActivity extends Activity {
     public void onbsToggleClicked(View view) {
         boolean on = ((ToggleButton) view).isChecked();
         
-    	SeekBar B = (SeekBar) findViewById(R.id.backgroundspeedSeekBar);
+    	EditText bgEditText = (EditText) findViewById(R.id.bgspeedEditText);
 
     	if (on) {
-        	B.setEnabled(true);
+        	bgEditText.setEnabled(true);
         	bs = new BackgroundShifter(this);
         	this.bs.runloop = true;
             this.bs.start();        	
@@ -69,71 +67,62 @@ public class MainActivity extends Activity {
             this.cr.start();
             
         } else {
-        	B.setEnabled(false);
+        	bgEditText.setEnabled(false);
             this.bs.runloop = false;
             this.cr.runloop=false;
            
             counter=0;
        }
     }
-    
-    @SuppressLint("HandlerLeak") 
+
+	@SuppressLint("HandlerLeak") 
     Handler updateUI = new Handler() {
     	public void handleMessage(Message m) {
 			setBackgroundColor(bgcolor);
     		TextView textView = (TextView) findViewById(R.id.counterTextView);
     		textView.setText(Integer.toString(counter));
-    		if ((m.arg1 != 0)&&(m.arg2!=0)) {
+
+    		if (m.what == 1) {
     			TextView currentview=(TextView)findViewById(R.id.currentTextView);
-    			currentview.setText(Integer.toString(m.arg1));//+"  "+Integer.toString(m.arg2));
+    			currentview.setText(Integer.toString(m.arg1));
                 TextView voltageview=(TextView)findViewById(R.id.voltagetextView);
                 voltageview.setText(Integer.toString(m.arg2));
-
     		}
     	}
     };
 
-    void setBackgroundColor(int col) {
+    public void setBackgroundColor(int col) {
     	RelativeLayout L = (RelativeLayout) this.findViewById(R.id.mainRelativeLayout);
     	L.setBackgroundColor(Color.argb(255, col, col, col));
     }
 
     void configureBackgroundControl() {
-    	SeekBar B = (SeekBar) this.findViewById(R.id.backgroundspeedSeekBar);
-    	B.setMax(99);
+    	final EditText bgspeedTextBox = (EditText) findViewById(R.id.bgspeedEditText);
 
-    	B.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-    		@Override
-    		public void onProgressChanged(SeekBar bgspeedSeekBar, int progress, boolean touch) {
-    			bgspeed = progress+1;
+    	bgspeedTextBox.setOnFocusChangeListener(new OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+            	TextView bsspeedLabel = (TextView) findViewById(R.id.backgroundSpeedTextView);
+            	if (hasFocus == true) {
+            		bgspeedTextBox.setText("");
+            	}
+            	if (hasFocus == false) {
+            		try {
+            			bgspeed = Integer.parseInt(bgspeedTextBox.getText().toString());
+            		} catch (NumberFormatException err) { 
+            			bgspeedTextBox.setText(Integer.toString(bgspeed));
+            		}
+            		bsspeedLabel.setText(Integer.toString(bgspeed));
+            	}
+            }
+        });
 
-    			TextView bsspeedLabel = (TextView) findViewById(R.id.backgroundSpeedTextView);
-    	    	bsspeedLabel.setText((Integer.toString(bgspeed)+1)+" ms");
-    			
-    		}
+    	bgspeedTextBox.setText(Integer.toString(bgspeed));
 
-			@Override
-			public void onStartTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onStopTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-				
-			}
-    	});
-
-    	B.setEnabled(false);
-    	
-    	
     	TextView bsSpeed = (TextView) findViewById(R.id.backgroundSpeedTextView);
-    	bsSpeed.setText(Integer.toString((B.getProgress()+1))+" ms");
+    	bsSpeed.setText(Integer.toString(bgspeed)+" ms");
+
     	ToggleButton bsButton = (ToggleButton) findViewById(R.id.backgroundshiftToggleButton);
     	bsButton.setChecked(false);
-    	
-    	
     }
 }
     
