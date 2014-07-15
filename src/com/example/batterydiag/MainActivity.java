@@ -20,18 +20,19 @@ public class MainActivity extends Activity {
 
 	public int bgcolor;
 	public int bgspeed;
-	public int counter;
+	public int counter=0;
+	
 	
 	private BackgroundShifter bs;
 	private CurrentFileReader cr;
-	private MainLoop loop = new MainLoop(this);
+	
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         configureBackgroundControl();
-        this.loop.start();
+        
     }
 
     @Override
@@ -66,10 +67,13 @@ public class MainActivity extends Activity {
             cr = new CurrentFileReader(this);
             this.cr.runloop=true;
             this.cr.start();
+            
         } else {
         	B.setEnabled(false);
             this.bs.runloop = false;
             this.cr.runloop=false;
+           
+            counter=0;
        }
     }
     
