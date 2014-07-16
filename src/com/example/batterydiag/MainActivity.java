@@ -1,18 +1,23 @@
 package com.example.batterydiag;
 
+import java.math.BigDecimal;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 import android.widget.ToggleButton;
 
 
@@ -33,7 +38,7 @@ public class MainActivity extends Activity {
         setBackgroundColor(bgcolor);
 
         try {
-            android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_DISPLAY);
+            android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
         } catch (Throwable t) {}
     }
 
@@ -103,7 +108,7 @@ public class MainActivity extends Activity {
     void configureBackgroundControl() {
     	final EditText bgspeedTextBox = (EditText) findViewById(R.id.bgspeedEditText);
 
-    	bgspeedTextBox.setOnFocusChangeListener(new OnFocusChangeListener() {
+/*    	bgspeedTextBox.setOnFocusChangeListener(new OnFocusChangeListener() {
             public void onFocusChange(View v, boolean hasFocus) {
             	TextView bsspeedLabel = (TextView) findViewById(R.id.backgroundSpeedTextView);
             	if (hasFocus == true) {
@@ -113,17 +118,43 @@ public class MainActivity extends Activity {
             		try {
             			bgspeed = Integer.parseInt(bgspeedTextBox.getText().toString());
             		} catch (NumberFormatException err) { 
-            			bgspeedTextBox.setText(Integer.toString(bgspeed));
+            			bgspeedTextBox.setText("----");
+//            			bgspeedTextBox.setText(Integer.toString(bgspeed));
             		}
-            		bsspeedLabel.setText(Integer.toString(bgspeed));
+            		bsspeedLabel.setText(Integer.toString(bgspeed) + " ms");
             	}
             }
-        });
+        }); 
+*/
+    	bgspeedTextBox.setOnEditorActionListener(new OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+	    			if (actionId == EditorInfo.IME_ACTION_DONE) {
+	    				float freq = 0.0f;
+	    				try {
+	            			freq = Float.parseFloat(bgspeedTextBox.getText().toString());
+	            			if (freq > 1.0f)
+	            				throw new NumberFormatException();
+	            		} catch (NumberFormatException err) {
+	            			BigDecimal dec = new BigDecimal(Float.toString(1000.0f/(511.0f*(float)bgspeed)));
+	            			dec.setScale(2, BigDecimal.ROUND_HALF_UP);
+	            			bgspeedTextBox.setText(Float.toString(dec.floatValue()));
+	            			return false;
+	            		}
 
-    	bgspeedTextBox.setText(Integer.toString(bgspeed));
+	    				bgspeed = (int)(1000.0f/(511.0f*freq));
+	            		
+	                	TextView bsSpeed = (TextView) findViewById(R.id.backgroundSpeedTextView);
+	                	bsSpeed.setText(Integer.toString(bgspeed)+" ms "+Float.toString(freq)+" hz");
+	    			}
+				return false;
+			}
+    	});
+    	float freq = (1000.0f/((float)bgspeed*511.0f));
+    	bgspeedTextBox.setText(Float.toString(freq));
 
     	TextView bsSpeed = (TextView) findViewById(R.id.backgroundSpeedTextView);
-    	bsSpeed.setText(Integer.toString(bgspeed)+" ms");
+    	bsSpeed.setText(Integer.toString(bgspeed)+" ms "+Float.toString(freq)+" hz");
 
     	ToggleButton bsButton = (ToggleButton) findViewById(R.id.backgroundshiftToggleButton);
     	bsButton.setChecked(false);

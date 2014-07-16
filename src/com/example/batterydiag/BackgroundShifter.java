@@ -12,7 +12,7 @@ public class BackgroundShifter extends Thread {
 	}
 
 	public void run() {
-		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_DISPLAY);
+		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
 
 		while (runloop) {
 			if (up == true)
@@ -24,7 +24,7 @@ public class BackgroundShifter extends Thread {
 				con.bgcolor = 254;
 				up = false;
 			}
-			else if (con.bgcolor < 0) {
+			else if (con.bgcolor < 1) {
 				con.bgcolor = 1;
 				up = true;
 			}

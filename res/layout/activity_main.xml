@@ -45,20 +45,24 @@
             android:id="@+id/bgspeedEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/backgroundshiftToggleButton"
             android:layout_alignBottom="@+id/backgroundshiftToggleButton"
-            android:layout_alignParentRight="true"
-            android:ems="10"
+            android:layout_alignRight="@+id/backgroundSpeedTextView"
+            android:ems="4"
             android:enabled="false"
-            android:inputType="number"
-            android:maxLength="3" />
+            android:inputType="number|numberDecimal"
+            android:maxLength="4" >
 
-        <SeekBar
-            android:id="@+id/seekBar1"
-            android:layout_width="match_parent"
+            <requestFocus />
+        </EditText>
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/backgroundshiftToggleButton" />
+            android:layout_alignBaseline="@+id/bgspeedEditText"
+            android:layout_alignBottom="@+id/bgspeedEditText"
+            android:layout_toRightOf="@+id/bgspeedEditText"
+            android:text="Hz" />
 
     </RelativeLayout>
 

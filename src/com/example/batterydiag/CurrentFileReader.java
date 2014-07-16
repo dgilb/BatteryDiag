@@ -22,7 +22,7 @@ public class CurrentFileReader extends Thread {
 	}
 	
 	public void run() {
-		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_DISPLAY);
+		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
 
 		StringBuilder text= new StringBuilder();
 
@@ -39,7 +39,7 @@ public class CurrentFileReader extends Thread {
 
 					if ((currentline != null) && (voltageline != null)) {
 						text.append(currentline+" "+voltageline+" "+Long.toString((System.nanoTime()/1000000)));
-						text.append('\n'); 
+						text.append("\r\n"); 
 	
 						Message m = con.updateUI.obtainMessage();
 						m.what = 1;  // specify message 1 in handler to indicate updating text fields
@@ -82,7 +82,7 @@ public class CurrentFileReader extends Thread {
 		}
 
 	 	try{
-	 		CurrentFileReader.sleep(100);
+	 		CurrentFileReader.sleep(15);
 	 	}
 	 	catch (InterruptedException err){
 	 		err.printStackTrace();
