@@ -12,6 +12,8 @@ public class BackgroundShifter extends Thread {
 	}
 
 	public void run() {
+		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_DISPLAY);
+
 		while (runloop) {
 			if (up == true)
 				con.bgcolor++;

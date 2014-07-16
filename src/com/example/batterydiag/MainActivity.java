@@ -31,6 +31,10 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         configureBackgroundControl();
         setBackgroundColor(bgcolor);
+
+        try {
+            android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_DISPLAY);
+        } catch (Throwable t) {}
     }
 
     @Override

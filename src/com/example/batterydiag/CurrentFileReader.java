@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import android.os.Message;
+import android.os.Process;
 
 public class CurrentFileReader extends Thread {
 	MainActivity con;
@@ -21,6 +22,8 @@ public class CurrentFileReader extends Thread {
 	}
 	
 	public void run() {
+		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_DISPLAY);
+
 		StringBuilder text= new StringBuilder();
 
 		while (runloop) {
