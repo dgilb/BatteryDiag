@@ -16,6 +16,9 @@ import android.os.Process;
 public class CurrentFileReader extends Thread {
 	MainActivity con;
 	public boolean runloop = true;
+
+	public int current_now;
+	public int voltage_now;
 	
 	public CurrentFileReader(MainActivity a) {
 		this.con = a;
@@ -46,6 +49,9 @@ public class CurrentFileReader extends Thread {
 						m.arg1 = Integer.parseInt(currentline);
 						m.arg2 = Integer.parseInt(voltageline);
 						con.updateUI.sendMessage(m);
+
+						current_now = m.arg1;
+						voltage_now = m.arg2;
 					}
 
 					br.close();
@@ -79,17 +85,17 @@ public class CurrentFileReader extends Thread {
 						}catch(FileNotFoundException e){e.printStackTrace();}
 				catch(IOException e){e.printStackTrace();}
 				
-		}
-
-	 	try{
-	 		CurrentFileReader.sleep(15);
-	 	}
-	 	catch (InterruptedException err){
-	 		err.printStackTrace();
-	 	}
+			}
+	
+		 	try {
+		 		CurrentFileReader.sleep(50);
+		 	}
+		 	catch (InterruptedException err){
+		 		err.printStackTrace();
+		 	}
 		}
 		return;
-	 }
+	}
 }
 
 

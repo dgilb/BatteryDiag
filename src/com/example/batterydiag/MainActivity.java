@@ -1,6 +1,6 @@
 package com.example.batterydiag;
 
-import java.math.BigDecimal;
+import java.text.NumberFormat;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -12,7 +12,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnFocusChangeListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -77,6 +76,8 @@ public class MainActivity extends Activity {
             
         } else {
         	bgEditText.setEnabled(false);
+            setBackgroundColor(bs.colarray[0]);
+//            setBackgroundColor(255);
             this.bs.runloop = false;
             this.cr.runloop=false;
            
@@ -136,21 +137,27 @@ public class MainActivity extends Activity {
 	            			if (freq > 1.0f)
 	            				throw new NumberFormatException();
 	            		} catch (NumberFormatException err) {
-	            			BigDecimal dec = new BigDecimal(Float.toString(1000.0f/(511.0f*(float)bgspeed)));
-	            			dec.setScale(2, BigDecimal.ROUND_HALF_UP);
-	            			bgspeedTextBox.setText(Float.toString(dec.floatValue()));
+	            			freq = (1000.0f/(32.0f*(float)bgspeed));
+//	            			freq = (1000.0f/(511.0f*(float)bgspeed));
+	            			NumberFormat formatter = NumberFormat.getNumberInstance();
+	            			formatter.setMinimumFractionDigits(2);
+	            			formatter.setMaximumFractionDigits(2);
+	            			bgspeedTextBox.setText(formatter.format(freq));
 	            			return false;
 	            		}
 
-	    				bgspeed = (int)(1000.0f/(511.0f*freq));
+	    				bgspeed = (int)(1000.0f/(32.0f*freq));
+//	    				bgspeed = (int)(1000.0f/(511.0f*freq));
 	            		
 	                	TextView bsSpeed = (TextView) findViewById(R.id.backgroundSpeedTextView);
 	                	bsSpeed.setText(Integer.toString(bgspeed)+" ms "+Float.toString(freq)+" hz");
+	                	v.clearFocus();
 	    			}
 				return false;
 			}
     	});
-    	float freq = (1000.0f/((float)bgspeed*511.0f));
+    	float freq = (1000.0f/((float)bgspeed*32.0f));
+//    	float freq = (1000.0f/((float)bgspeed*511.0f));
     	bgspeedTextBox.setText(Float.toString(freq));
 
     	TextView bsSpeed = (TextView) findViewById(R.id.backgroundSpeedTextView);
