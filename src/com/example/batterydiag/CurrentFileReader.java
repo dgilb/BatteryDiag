@@ -11,15 +11,20 @@ import java.util.Date;
 import java.util.Locale;
 
 import android.os.Message;
-import android.os.Process;
 
 public class CurrentFileReader extends Thread {
-	MainActivity con;
+	static final public int CFR_SAMPLING_RATE = 50;
+	
+	static final public int CFR_CURRENT = 1;
+	static final public int CFR_VOLTAGE = 2;
+
+	private MainActivity con;
+
 	public boolean runloop = true;
 
-	public int current_now;
-	public int voltage_now;
-	
+	private int current_now;
+	private int voltage_now;
+
 	public CurrentFileReader(MainActivity a) {
 		this.con = a;
 	}
@@ -29,73 +34,80 @@ public class CurrentFileReader extends Thread {
 
 		StringBuilder text= new StringBuilder();
 
-		while (runloop) {
-			File f = new File("/sys/class/power_supply/battery/current_now");
-			File f2 = new File("/sys/class/power_supply/battery/voltage_now");
+		while (runloop && con.isRunning(MainActivity.BD_THREAD_BGCOLOR)) {
 
-			if(f.exists() && f2.exists()) {
-				try {
-					BufferedReader br = new BufferedReader(new FileReader(f));
-					BufferedReader br2 = new BufferedReader(new FileReader(f2));
-					String currentline = br.readLine();
-					String voltageline = br2.readLine();
+			current_now = readValueFromFile(CFR_CURRENT);
+			voltage_now = readValueFromFile(CFR_VOLTAGE);
 
-					if ((currentline != null) && (voltageline != null)) {
-						text.append(currentline+" "+voltageline+" "+Long.toString((System.nanoTime()/1000000)));
-						text.append("\r\n"); 
-	
-						Message m = con.updateUI.obtainMessage();
-						m.what = 1;  // specify message 1 in handler to indicate updating text fields
-						m.arg1 = Integer.parseInt(currentline);
-						m.arg2 = Integer.parseInt(voltageline);
-						con.updateUI.sendMessage(m);
+			text.append(Integer.toString(current_now)+" "+Integer.toString(voltage_now)+" "+Long.toString((System.nanoTime()/1000000)));
+			text.append("\r\n");
 
-						current_now = m.arg1;
-						voltage_now = m.arg2;
-					}
+			Message m = con.updateUI.obtainMessage(MainActivity.BD_MSG_UPDATE_CV_TEXT, current_now, voltage_now);
+			con.updateUI.sendMessage(m);
 
-					br.close();
-					br2.close();
-				} catch (IOException e) {
-					// error handling
-				}
-			}
-		
-		if (con.counter<1023){
-			con.counter++;
-		}
-		else if (con.counter==1023) {
-			con.counter=0;
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmssSSS", Locale.US);
-			String filename="CurrentDiag";
-			filename += "-" + sdf.format(new Date()) + ".txt";
-			File file=new File(con.getExternalFilesDir(null),filename);
-			String content=text.toString();
-				try{
-					FileOutputStream fos=new FileOutputStream(file,false);
-					fos.write(content.getBytes());
-					//FileOutputStream outputStream=openFileOutput(filename,Activity.MODE_APPEND);
-							//outputStream.write(content.getBytes());
-							//outputStream.flush();
-							//outputStream.close();
-					fos.flush();
-					fos.close();
-					text.setLength(0);
-							//Toast.makeText(MainActivity.this,"Saved",Toast.LENGTH_LONG).show();
-						}catch(FileNotFoundException e){e.printStackTrace();}
-				catch(IOException e){e.printStackTrace();}
-				
-			}
-	
 		 	try {
-		 		CurrentFileReader.sleep(50);
+		 		CurrentFileReader.sleep(CFR_SAMPLING_RATE);
 		 	}
 		 	catch (InterruptedException err){
-		 		err.printStackTrace();
-		 	}
+				err.printStackTrace();
+			}
 		}
+
+		con.stopSampling();
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmssSSS", Locale.US);
+		String filename="CurrentDiag";
+		filename += "-" + sdf.format(new Date()) + ".txt";
+		File file=new File(con.getExternalFilesDir(null),filename);
+		String content=text.toString();
+
+		try {
+			FileOutputStream fos=new FileOutputStream(file,false);
+			fos.write(content.getBytes());
+			fos.flush();
+			fos.close();
+			text.setLength(0);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		return;
 	}
+
+	private int readValueFromFile(int file_type) {
+		File f = null;
+
+		switch (file_type) {
+			case CFR_CURRENT:
+				f = new File("/sys/class/power_supply/battery/current_now");
+				break;
+			case CFR_VOLTAGE:
+				f = new File("/sys/class/power_supply/battery/current_now");
+				break;
+			default:
+				return 0;
+		}
+
+		int number = 0;
+
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(f));
+			String line = br.readLine();
+			br.close();
+	
+			if (line == null) {
+				return 0;
+			}
+
+			number = Integer.parseInt(line);
+		}
+		catch (IOException e) {
+			// handle unknown value error
+			return 0;
+		}
+
+		return number;
+	}
 }
-
-
